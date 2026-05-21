@@ -5,6 +5,10 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  optimizeDeps: {
+    include: ["leaflet", "leaflet-draw", "@turf/turf", "fast-deep-equal"],
+    needsInterop: ["fast-deep-equal"],
+  },
   server: {
     proxy: {
       "/roboflow-proxy": {

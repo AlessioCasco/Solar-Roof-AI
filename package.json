@@ -5,7 +5,11 @@
   "workspaces": [
     "frontend"
   ],
+  "devDependencies": {
+    "patch-package": "^8.0.0"
+  },
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "npm run dev --workspace frontend",
     "build": "npm run build --workspace frontend",
     "preview": "npm run preview --workspace frontend",
