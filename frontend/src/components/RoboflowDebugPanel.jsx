@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 
-const ROBOFLOW_API_URL = import.meta.env.VITE_ROBOFLOW_API_URL;
-const ROBOFLOW_WORKSPACE = import.meta.env.VITE_ROBOFLOW_WORKSPACE;
-const ROBOFLOW_WORKFLOW_ID = import.meta.env.VITE_ROBOFLOW_WORKFLOW_ID;
+const ROBOFLOW_API_URL = import.meta.env.VITE_ROBOFLOW_API_URL ?? "https://serverless.roboflow.com";
+const ROBOFLOW_WORKSPACE = import.meta.env.VITE_ROBOFLOW_WORKSPACE ?? "rooflayout";
+const ROBOFLOW_WORKFLOW_ID = import.meta.env.VITE_ROBOFLOW_WORKFLOW_ID ?? "detect-count-and-visualize";
 const ROBOFLOW_WORKFLOW_URL = import.meta.env.VITE_ROBOFLOW_WORKFLOW_URL;
-const ROBOFLOW_API_KEY = import.meta.env.VITE_ROBOFLOW_API_KEY;
+const ROBOFLOW_API_KEY = import.meta.env.VITE_ROBOFLOW_API_KEY ?? "REPLACED_ROBOFLOW_KEY";
 const ROBOFLOW_PROXY_PREFIX = "/roboflow-proxy";
 
 function stripDataUrlPrefix(value) {
