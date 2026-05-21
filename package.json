@@ -9,7 +9,7 @@
     "patch-package": "^8.0.0"
   },
   "scripts": {
-    "postinstall": "patch-package",
+    "postinstall": "node -e \"try { require.resolve('patch-package'); require('child_process').execSync('patch-package', { stdio: 'inherit' }); } catch (e) { console.log('patch-package not available; skipping'); }\"",
     "dev": "npm run dev --workspace frontend",
     "build": "npm run build --workspace frontend",
     "preview": "npm run preview --workspace frontend",
