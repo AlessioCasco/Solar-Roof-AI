@@ -5,7 +5,7 @@ const ROBOFLOW_WORKSPACE = import.meta.env.VITE_ROBOFLOW_WORKSPACE;
 const ROBOFLOW_WORKFLOW_ID = import.meta.env.VITE_ROBOFLOW_WORKFLOW_ID;
 const ROBOFLOW_WORKFLOW_URL = import.meta.env.VITE_ROBOFLOW_WORKFLOW_URL;
 const ROBOFLOW_API_KEY = import.meta.env.VITE_ROBOFLOW_API_KEY;
-const ROBOFLOW_DEV_PROXY_PREFIX = "/roboflow-proxy";
+const ROBOFLOW_PROXY_PREFIX = "/roboflow-proxy";
 
 function stripDataUrlPrefix(value) {
   if (!value.includes(",")) return value;
@@ -21,8 +21,8 @@ function fileToDataUrl(file) {
   });
 }
 
-function toDevProxyUrl(absoluteUrl) {
-  return `${ROBOFLOW_DEV_PROXY_PREFIX}/${absoluteUrl.replace(/^https?:\/\//, "")}`;
+function toProxyUrl(absoluteUrl) {
+  return `${ROBOFLOW_PROXY_PREFIX}/${absoluteUrl.replace(/^https?:\/\//, "")}`;
 }
 
 function withApiKeyQuery(endpoint, apiKey) {
@@ -34,17 +34,17 @@ function endpointCandidates() {
   const candidates = [];
 
   if (ROBOFLOW_WORKFLOW_URL) {
-    candidates.push(import.meta.env.DEV ? toDevProxyUrl(ROBOFLOW_WORKFLOW_URL) : ROBOFLOW_WORKFLOW_URL);
+    candidates.push(toProxyUrl(ROBOFLOW_WORKFLOW_URL));
 
     if (/\/workflow\//.test(ROBOFLOW_WORKFLOW_URL)) {
       const alternate = ROBOFLOW_WORKFLOW_URL.replace(/\/workflow\//, "/workflows/");
-      candidates.push(import.meta.env.DEV ? toDevProxyUrl(alternate) : alternate);
+      candidates.push(toProxyUrl(alternate));
     }
   }
 
   if (ROBOFLOW_API_URL && ROBOFLOW_WORKSPACE && ROBOFLOW_WORKFLOW_ID) {
     const serverless = `${ROBOFLOW_API_URL.replace(/\/$/, "")}/${ROBOFLOW_WORKSPACE}/workflows/${ROBOFLOW_WORKFLOW_ID}`;
-    candidates.push(import.meta.env.DEV ? toDevProxyUrl(serverless) : serverless);
+    candidates.push(toProxyUrl(serverless));
   }
 
   return [...new Set(candidates)];
