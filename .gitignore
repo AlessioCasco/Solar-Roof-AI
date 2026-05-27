@@ -1,12 +1,34 @@
+# Dependencies
 node_modules
-.vite
+.pnp
+.pnp.js
 frontend/node_modules
-frontend/dist
+backend/node_modules
+
+# Python / Backend
 backend/.venv
+backend/venv
+backend/ENV
 backend/__pycache__
 backend/.pytest_cache
 backend/.mypy_cache
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+
+# Build and Output
+.vite
+frontend/dist
 dist
+build
+out
+
+# Testing
+coverage
+.nyc_output
 
 # Environment files
 .env
@@ -18,4 +40,46 @@ frontend/.env.*
 backend/.env
 backend/.env.*
 !backend/.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor / IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Vercel / Deployment
 .vercel
+.netlify
+
+# AI / Coding Assistant Tools
+.codex
+.codex/
+.npmrmcp
+.mcp
+opencode.json
+.gemini/
