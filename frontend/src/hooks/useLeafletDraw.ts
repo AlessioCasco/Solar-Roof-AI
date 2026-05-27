@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet-draw";
 
+const GMAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
+
 // Improve tooltips and texts globally for better UI/UX
 (L as any).drawLocal.draw.toolbar.buttons.polygon = 'Draw a custom roof area';
 (L as any).drawLocal.draw.toolbar.buttons.polyline = 'Draw a measuring line';
@@ -339,27 +341,30 @@ export function useLeafletDraw(
         19
       );
 
-      const monochromeTiles = L.tileLayer(
-        "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+      const googleRoadmap = L.tileLayer(
+        "https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
         {
           maxZoom: 20,
-          subdomains: "abcd",
-          crossOrigin: "anonymous",
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; CARTO',
+          subdomains: "0123",
+          attribution: "&copy; Google",
         }
       );
-      const esriImagery = L.tileLayer(
-        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-        { maxZoom: 21, crossOrigin: "anonymous" }
+      const googleSatellite = L.tileLayer(
+        "https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+        {
+          maxZoom: 20,
+          subdomains: "0123",
+          attribution: "&copy; Google",
+        }
       );
 
-      monochromeLayerRef.current = monochromeTiles;
-      satelliteLayerRef.current = esriImagery;
+      monochromeLayerRef.current = googleRoadmap;
+      satelliteLayerRef.current = googleSatellite;
 
       if (viewMode === "satellite") {
-        esriImagery.addTo(map);
+        googleSatellite.addTo(map);
       } else if (viewMode === "normal") {
-        monochromeTiles.addTo(map);
+        googleRoadmap.addTo(map);
       }
 
       const heatmapItems = new L.FeatureGroup();
