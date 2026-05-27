@@ -427,6 +427,29 @@ export function useLeafletDraw(
       map.on((L as any).Draw.Event.DELETED, handleDrawDeleted);
       drawToolStartHandlerRef.current = syncActiveToolState;
       drawToolStopHandlerRef.current = () => window.setTimeout(syncActiveToolState, 0);
+      
+      const handleToolbarClick = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (!target) return;
+
+        const isEditOrDelete = target.classList.contains('leaflet-draw-edit-remove') || target.classList.contains('leaflet-draw-edit-edit');
+        if (isEditOrDelete && target.classList.contains('leaflet-draw-toolbar-button-enabled')) {
+          e.stopPropagation();
+          e.preventDefault();
+          const control = drawControlRef.current as any;
+          if (control && control._toolbars && control._toolbars.edit) {
+            const editToolbar = control._toolbars.edit;
+            if (editToolbar._activeMode && editToolbar._activeMode.handler) {
+              editToolbar._activeMode.handler.save();
+              editToolbar._activeMode.handler.disable();
+            }
+          }
+        }
+      };
+      
+      (drawControlRef as any)._clickHandler = handleToolbarClick;
+      map.getContainer().addEventListener('click', handleToolbarClick, true);
+
       map.on("draw:drawstart", drawToolStartHandlerRef.current);
       map.on("draw:drawstop", drawToolStopHandlerRef.current);
       map.on("draw:editstart", drawToolStartHandlerRef.current);
@@ -436,6 +459,11 @@ export function useLeafletDraw(
       drawControlRef.current = drawControl;
       syncActiveToolState();
     } else if (!showMapTools && drawControlRef.current) {
+      const clickHandler = (drawControlRef as any)._clickHandler;
+      if (clickHandler) {
+        map.getContainer().removeEventListener('click', clickHandler, true);
+      }
+      
       map.removeControl(drawControlRef.current);
       map.off((L as any).Draw.Event.CREATED, handleDrawCreated);
       map.off((L as any).Draw.Event.EDITED, handleDrawEdited);
