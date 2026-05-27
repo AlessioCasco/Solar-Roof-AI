@@ -6,6 +6,12 @@
   </p>
 
   <p align="center">
+    <a href="https://solar-roof-ai-frontend.vercel.app/">
+      <img src="https://img.shields.io/badge/🚀_Live_Demo-solar--roof--ai--frontend.vercel.app-7946E5?style=for-the-badge" alt="Live Demo">
+    </a>
+  </p>
+
+  <p align="center">
     <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18.2-61DAFB?logo=react&logoColor=black" alt="React"></a>
     <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite&logoColor=white" alt="Vite"></a>
     <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white" alt="TypeScript"></a>
