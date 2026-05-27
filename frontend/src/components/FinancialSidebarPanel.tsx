@@ -163,22 +163,26 @@ export function FinancialSidebarPanel({
             </div>
           )}
 
-          <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-3 flex items-center mb-2 gap-3">
-            <Info className="text-cyan-300 shrink-0" size={16} />
-            <div className="flex-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100">Projections use a USA financial model</div>
-            <button
-              aria-label="Reset Defaults"
-              onClick={onReset}
-              disabled={isLocked}
-              className="text-xs text-cyan-300 hover:text-cyan-100 underline decoration-cyan-500/50 underline-offset-4 disabled:opacity-50"
-            >
-              Reset
-            </button>
-          </div>
+          {!isLocked && (
+            <>
+              <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-3 flex items-center mb-2 gap-3">
+                <Info className="text-cyan-300 shrink-0" size={16} />
+                <div className="flex-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100">Projections use a USA financial model</div>
+                <button
+                  aria-label="Reset Defaults"
+                  onClick={onReset}
+                  disabled={isLocked}
+                  className="text-xs text-cyan-300 hover:text-cyan-100 underline decoration-cyan-500/50 underline-offset-4 disabled:opacity-50"
+                >
+                  Reset
+                </button>
+              </div>
 
-          <div className={`rounded-2xl border px-3 py-3 text-[10px] uppercase tracking-[0.12em] leading-relaxed ${getSyncTone(syncState)}`}>
-            {syncMessage}
-          </div>
+              <div className={`rounded-2xl border px-3 py-3 text-[10px] uppercase tracking-[0.12em] leading-relaxed ${getSyncTone(syncState)}`}>
+                {syncMessage}
+              </div>
+            </>
+          )}
 
           <div className="flex flex-col gap-4">
             <InputField
