@@ -342,18 +342,16 @@ export function useLeafletDraw(
       );
 
       const googleRoadmap = L.tileLayer(
-        "https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        "/gmaps-tiles/vt/lyrs=m&x={x}&y={y}&z={z}",
         {
           maxZoom: 20,
-          subdomains: "0123",
           attribution: "&copy; Google",
         }
       );
       const googleSatellite = L.tileLayer(
-        "https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+        "/gmaps-tiles/vt/lyrs=y&x={x}&y={y}&z={z}",
         {
           maxZoom: 20,
-          subdomains: "0123",
           attribution: "&copy; Google",
         }
       );

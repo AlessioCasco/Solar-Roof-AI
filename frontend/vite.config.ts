@@ -17,6 +17,15 @@ export default defineConfig({
   },
   server: {
     proxy: {
+      "/gmaps-tiles": {
+        target: "https://mt0.google.com",
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on("proxyRes", (proxyRes) => {
+            proxyRes.headers["Access-Control-Allow-Origin"] = "*";
+          });
+        },
+      },
       "/roboflow-proxy": {
         target: "https://serverless.roboflow.com",
         changeOrigin: true,

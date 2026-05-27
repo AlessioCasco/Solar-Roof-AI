@@ -1,7 +1,8 @@
 import type { Map as LeafletMap } from "leaflet";
 
-const GMAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY ?? "";
-const STATIC_MAP_MAX_SIZE = 640;
+const TILE_LOAD_TIMEOUT_MS = 4000;
+const CAPTURE_RETRY_DELAY_MS = 300;
+const MIN_TILE_COUNT = 2;
 
 export type SnapshotResult = {
   snapshotBase64: string;
@@ -9,25 +10,119 @@ export type SnapshotResult = {
   height: number;
 };
 
-function getMapType(map: LeafletMap): "satellite" | "roadmap" {
-  const tiles = map.getContainer().querySelectorAll("img.leaflet-tile");
-  for (const tile of tiles) {
-    const src = (tile as HTMLImageElement).src;
-    if (src.includes("lyrs=y") || src.includes("lyrs=s") || src.includes("lyrs=h")) {
-      return "satellite";
-    }
-  }
-  return "roadmap";
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
 }
 
-function fitSize(width: number, height: number, max: number) {
-  if (width <= max && height <= max) {
-    return { width, height };
+function nextFrame(): Promise<void> {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => resolve());
+  });
+}
+
+async function waitForTiles(container: HTMLDivElement): Promise<void> {
+  const tileImages = Array.from(container.querySelectorAll("img.leaflet-tile")) as HTMLImageElement[];
+
+  if (tileImages.length === 0) {
+    return;
   }
-  if (width >= height) {
-    return { width: max, height: Math.round((height / width) * max) };
+
+  await Promise.all(
+    tileImages.map(
+      (image) =>
+        new Promise<void>((resolve) => {
+          if (image.complete) {
+            resolve();
+            return;
+          }
+
+          const done = () => {
+            window.clearTimeout(timeoutId);
+            image.removeEventListener("load", done);
+            image.removeEventListener("error", done);
+            resolve();
+          };
+
+          const timeoutId = window.setTimeout(done, TILE_LOAD_TIMEOUT_MS);
+          image.addEventListener("load", done, { once: true });
+          image.addEventListener("error", done, { once: true });
+        })
+    )
+  );
+}
+
+function normalizePosition(value: number, max: number): number {
+  if (Number.isNaN(value) || !Number.isFinite(value)) {
+    return 0;
   }
-  return { width: Math.round((width / height) * max), height: max };
+  return Math.max(-max, Math.min(max * 2, value));
+}
+
+function renderTileCanvas(container: HTMLDivElement): { canvas: HTMLCanvasElement; drawnTiles: number } {
+  const containerRect = container.getBoundingClientRect();
+  const width = Math.max(1, Math.round(containerRect.width));
+  const height = Math.max(1, Math.round(containerRect.height));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("Unable to initialize snapshot canvas.");
+  }
+
+  context.fillStyle = "#000000";
+  context.fillRect(0, 0, width, height);
+
+  const tiles = Array.from(container.querySelectorAll("img.leaflet-tile")) as HTMLImageElement[];
+
+  let drawnTiles = 0;
+  tiles.forEach((tile) => {
+    if (!tile.complete || tile.naturalWidth <= 0 || tile.naturalHeight <= 0) {
+      return;
+    }
+
+    const tileRect = tile.getBoundingClientRect();
+    const tileWidth = Math.max(1, Math.round(tileRect.width));
+    const tileHeight = Math.max(1, Math.round(tileRect.height));
+    const x = normalizePosition(tileRect.left - containerRect.left, width);
+    const y = normalizePosition(tileRect.top - containerRect.top, height);
+
+    if (x + tileWidth <= 0 || y + tileHeight <= 0 || x >= width || y >= height) {
+      return;
+    }
+
+    context.drawImage(tile, x, y, tileWidth, tileHeight);
+    drawnTiles += 1;
+  });
+
+  if (drawnTiles < MIN_TILE_COUNT) {
+    throw new Error("Map tiles are not ready for capture.");
+  }
+
+  return { canvas, drawnTiles };
+}
+
+async function captureFromTiles(container: HTMLDivElement, map?: LeafletMap): Promise<SnapshotResult> {
+  if (map) {
+    map.invalidateSize();
+  }
+
+  await nextFrame();
+  await nextFrame();
+  await waitForTiles(container);
+
+  const { canvas } = renderTileCanvas(container);
+  const snapshotBase64 = canvas.toDataURL("image/png").split(",", 2)[1] ?? "";
+
+  return {
+    snapshotBase64,
+    width: canvas.width,
+    height: canvas.height,
+  };
 }
 
 export async function captureMapSnapshot(container: HTMLDivElement, map?: LeafletMap): Promise<SnapshotResult> {
@@ -36,31 +131,14 @@ export async function captureMapSnapshot(container: HTMLDivElement, map?: Leafle
     throw new Error("Unable to capture map snapshot from current view. Ensure satellite map is visible.");
   }
 
-  if (!map) {
-    throw new Error("Map reference required for Google Maps snapshot.");
+  try {
+    return await captureFromTiles(container, map);
+  } catch (tileErrorFirst) {
+    try {
+      await delay(CAPTURE_RETRY_DELAY_MS);
+      return await captureFromTiles(container, map);
+    } catch {
+      throw new Error("Unable to capture map snapshot from current view. Wait for map tiles to load and try again.");
+    }
   }
-
-  const center = map.getCenter();
-  const zoom = Math.round(map.getZoom());
-  const maptype = getMapType(map);
-  const { width, height } = fitSize(Math.round(rect.width), Math.round(rect.height), STATIC_MAP_MAX_SIZE);
-
-  const url = `https://maps.googleapis.com/maps/api/staticmap?center=${center.lat},${center.lng}&zoom=${zoom}&size=${width}x${height}&maptype=${maptype}&key=${GMAPS_API_KEY}`;
-
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Google Maps Static API returned ${response.status}. Check API key and usage limits.`);
-  }
-
-  const blob = await response.blob();
-  const dataUrl = await new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = () => reject(new Error("Failed to encode snapshot."));
-    reader.readAsDataURL(blob);
-  });
-
-  const snapshotBase64 = dataUrl.includes(",") ? dataUrl.split(",", 2)[1] ?? "" : dataUrl;
-
-  return { snapshotBase64, width, height };
 }
