@@ -285,7 +285,7 @@ function WorkspaceDataPanel({
                 />
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
                 <Button variant="primary" className="h-9 w-full" onClick={onAutoDetect} disabled={isAutoDetecting}>
                   {isAutoDetecting ? (
                     <>
@@ -293,36 +293,38 @@ function WorkspaceDataPanel({
                     </>
                   ) : (
                     <>
-                      <Bot size={14} /> Auto Detect
+                      <Bot size={14} /> Auto Detect Roof Planes
                     </>
                   )}
                 </Button>
                 <Button variant="outline" className="h-9 w-full" onClick={onCalculateSqFt}>
-                  <Ruler size={14} /> Calculate Area
+                  <Ruler size={14} /> Calculate Total Area
                 </Button>
-                <Button
-                  variant="primary"
-                  className="h-9 w-full"
-                  onClick={onExportBlueprintReport}
-                  disabled={isExportingBlueprintReport}
-                >
-                  {isExportingBlueprintReport ? (
-                    <>
-                      <Loader2 size={14} className="animate-spin" /> Exporting...
-                    </>
-                  ) : (
-                    <>
-                      <Download size={14} /> Export
-                    </>
-                  )}
-                </Button>
-                <Button
-                  variant="ghost"
-                  className="h-9 w-full border border-transparent text-red-400 hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-300"
-                  onClick={onClearAll}
-                >
-                  <Trash2 size={14} /> Clear All
-                </Button>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Button
+                    variant="primary"
+                    className="h-9 w-full"
+                    onClick={onExportBlueprintReport}
+                    disabled={isExportingBlueprintReport}
+                  >
+                    {isExportingBlueprintReport ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" /> Exporting...
+                      </>
+                    ) : (
+                      <>
+                        <Download size={14} /> Export
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="h-9 w-full border border-transparent text-red-400 hover:border-red-500/20 hover:bg-red-500/10 hover:text-red-300"
+                    onClick={onClearAll}
+                  >
+                    <Trash2 size={14} /> Clear All
+                  </Button>
+                </div>
               </div>
 
               {detectionMessage && (

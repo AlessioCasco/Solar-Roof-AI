@@ -1055,7 +1055,7 @@ export default function App() {
   const rejectAutoDetection = useCallback(() => {
     clearDetectionPreview();
     setDetectionPreview(null);
-    setDetectionMessage("Detection preview cleared. You can rerun auto detection or continue manual mapping.");
+    setDetectionMessage(null);
   }, [clearDetectionPreview]);
 
   const calculateSqFt = useCallback(() => {
