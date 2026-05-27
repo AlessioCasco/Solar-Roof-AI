@@ -38,9 +38,20 @@ This is not just a detection demo. It's a complete product-style workflow that b
 
 ## 📸 See It In Action
 
-| Workspace Overview | Blueprint | PDF Report |
-| :---: | :---: | :---: |
-| <img src="frontend/src/screenshots/localhost_5173_(pc%201920).png" width="300" alt="Workspace"> | <img src="frontend/src/screenshots/localhost_5173_(pc%201920)%20(2).png" width="300" alt="Blueprint"> | <img src="frontend/src/screenshots/solar%20ss.png" width="300" alt="PDF Report"> |
+<p align="center">
+  <strong>Workspace Overview</strong><br>
+  <img src="frontend/src/screenshots/localhost_5173_(pc%201920).png" width="800" alt="Workspace">
+</p>
+
+<p align="center">
+  <strong>Blueprint</strong><br>
+  <img src="frontend/src/screenshots/localhost_5173_(pc%201920)%20(2).png" width="800" alt="Blueprint">
+</p>
+
+<p align="center">
+  <strong>PDF Report</strong><br>
+  <img src="frontend/src/screenshots/solar%20ss.png" width="800" alt="PDF Report">
+</p>
 
 ---
 
