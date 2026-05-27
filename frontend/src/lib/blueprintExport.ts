@@ -854,68 +854,7 @@ function getContainedRect(
   return { x, y, width, height };
 }
 
-function drawProjectionTable(
-  pdf: jsPDF,
-  data: SolarFinancialResults["financialProjection"],
-  x: number,
-  y: number,
-  width: number,
-  ensureSpace: (heightNeeded: number) => void
-) {
-  const rowHeight = 13;
-  const columnWidth = [58, 88, 88, 88, 88];
-  const headers = ["Year", "No Solar", "With Solar", "Production", "Grid Use"];
-  let cursorY = y;
 
-  const drawHeader = () => {
-    pdf.setFillColor(241, 245, 249);
-    pdf.rect(x, cursorY - 9, width, rowHeight + 4, "F");
-
-    let cursorX = x + 4;
-    headers.forEach((header, index) => {
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(8);
-      pdf.setTextColor(15, 23, 42);
-      pdf.text(header, cursorX, cursorY);
-      cursorX += columnWidth[index];
-    });
-
-    cursorY += rowHeight;
-  };
-
-  ensureSpace(24);
-  drawHeader();
-
-  data.forEach((point, index) => {
-    ensureSpace(rowHeight + 4);
-
-    if (index % 2 === 1) {
-      pdf.setFillColor(248, 250, 252);
-      pdf.rect(x, cursorY - 9, width, rowHeight + 2, "F");
-    }
-
-    let cursorX = x + 4;
-    const rowValues = [
-      `${point.calendarYear}`,
-      formatCompactMoney(point.costWithoutSolar),
-      formatCompactMoney(point.costWithSolar),
-      `${formatNumber(point.yearlyProductionKwh, 0)} kWh`,
-      `${formatNumber(point.gridDependencyKwh, 0)} kWh`,
-    ];
-
-    rowValues.forEach((value, colIndex) => {
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(8);
-      pdf.setTextColor(51, 65, 85);
-      pdf.text(value, cursorX, cursorY);
-      cursorX += columnWidth[colIndex];
-    });
-
-    cursorY += rowHeight;
-  });
-
-  return cursorY;
-}
 
 export async function exportBlueprintPitchReport(
   input: ExportBlueprintReportInput
@@ -1015,12 +954,24 @@ export async function exportBlueprintPitchReport(
     cursorY = PAGE_MARGIN;
   };
 
+  pdf.setTextColor(79, 70, 229);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(24);
+  pdf.text("SOLAR ROOF AI", PAGE_MARGIN, cursorY);
+  
+  pdf.setTextColor(100, 116, 139);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10);
+  pdf.text("INTELLIGENT SOLAR POTENTIAL REPORT", PAGE_MARGIN, cursorY + 14);
+  
+  cursorY += 36;
+
   pdf.setTextColor(15, 23, 42);
   pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(20);
+  pdf.setFontSize(18);
   const titleLines = pdf.splitTextToSize(reportTitle, contentWidth);
   pdf.text(titleLines, PAGE_MARGIN, cursorY);
-  cursorY += titleLines.length * 24;
+  cursorY += titleLines.length * 20;
 
   pdf.setFont("helvetica", "normal");
   pdf.setFontSize(10);
@@ -1146,82 +1097,36 @@ export async function exportBlueprintPitchReport(
   cursorY += narrativeLines.length * 12 + 10;
 
   ensureSpace(22);
-  drawSectionHeading(pdf, "Blueprint And Geometry Summary", PAGE_MARGIN, cursorY);
+  drawSectionHeading(pdf, "System & Design Overview", PAGE_MARGIN, cursorY);
   cursorY += 14;
 
-  const geometrySummaryMetrics: MetricItem[] = [
-    { label: "Roof elements", value: `${input.roofElements.length}` },
-    { label: "Line geometries", value: `${lineGeometryCount}` },
-    { label: "Obstacle markers", value: `${input.obstacleMarkers.length}` },
-    { label: "Placed layout panels", value: `${input.placedPanels.length}` },
-    { label: "Exclusion zones", value: `${input.panelLayoutContext.exclusionZones.length}` },
+  const systemDesignMetrics: MetricItem[] = [
+    { label: "System size", value: `${formatNumber(input.plannerFinancials.installationSizeKw, 2)} kW` },
+    { label: "Placed panels", value: `${input.placedPanels.length}` },
+    { label: "Panel model", value: panelType.label },
+    { label: "Per-panel capacity", value: `${input.plannerInputs.panelCapacityWatts} W` },
     {
       label: "Usable roof area",
       value: input.roofAreaSummary ? `${formatNumber(input.roofAreaSummary.netSqFt, 0)} sq ft` : "Not calculated",
     },
+    { label: "Mapped geometry", value: `${input.roofElements.length} elements, ${input.obstacleMarkers.length} obstacles` },
   ];
 
-  ensureSpace(170);
-  cursorY += drawMetricGrid(pdf, PAGE_MARGIN, cursorY, contentWidth, geometrySummaryMetrics, 2);
+  ensureSpace(140);
+  cursorY += drawMetricGrid(pdf, PAGE_MARGIN, cursorY, contentWidth, systemDesignMetrics, 2);
   cursorY += 8;
 
   ensureSpace(22);
-  drawSectionHeading(pdf, "Design Engineering Detail", PAGE_MARGIN, cursorY);
+  drawSectionHeading(pdf, "Financial Highlights", PAGE_MARGIN, cursorY);
   cursorY += 14;
 
-  const designDetailMetrics: MetricItem[] = [
-    { label: "Panel model", value: panelType.label },
-    { label: "Panel dimensions", value: `${panelType.widthM}m x ${panelType.heightM}m` },
-    { label: "Per-panel capacity", value: `${input.plannerInputs.panelCapacityWatts} W` },
-    { label: "Total panel surface", value: `${formatNumber(panelSurfaceSqFt, 1)} sq ft` },
-    { label: "Layout mode", value: input.panelLayoutMode.toUpperCase() },
-    {
-      label: "Primary roof detected",
-      value: input.panelLayoutContext.primaryRoof ? "Yes" : "No",
-    },
-    {
-      label: "Blocked roof area",
-      value:
-        input.roofAreaSummary !== null
-          ? `${formatNumber(input.roofAreaSummary.blockedSqFt, 0)} sq ft`
-          : "Not calculated",
-    },
-    {
-      label: "Gross roof area",
-      value:
-        input.roofAreaSummary !== null
-          ? `${formatNumber(input.roofAreaSummary.grossSqFt, 0)} sq ft`
-          : "Not calculated",
-    },
-    {
-      label: "Solar best zone",
-      value: input.solarHeatmap ? input.solarHeatmap.bestZoneLabel : "Not available",
-    },
-    {
-      label: "Average solar exposure",
-      value: input.solarHeatmap ? `${input.solarHeatmap.averageExposurePercent}%` : "Not available",
-    },
-  ];
-
-  ensureSpace(220);
-  cursorY += drawMetricGrid(pdf, PAGE_MARGIN, cursorY, contentWidth, designDetailMetrics, 2);
-  cursorY += 8;
-
-  ensureSpace(22);
-  drawSectionHeading(pdf, "Financial And System Details", PAGE_MARGIN, cursorY);
-  cursorY += 14;
-
-  const financialMetrics: MetricItem[] = [
+  const financialHighlightsMetrics: MetricItem[] = [
+    { label: "Estimated 20-year savings", value: formatMoney(input.plannerFinancials.totalTwentyYearSavings) },
+    { label: "Net installation cost", value: formatMoney(input.plannerFinancials.netInstallationCost) },
+    { label: "Gross installation cost", value: formatMoney(input.plannerFinancials.grossInstallationCost) },
     { label: "Average monthly bill", value: formatMoney(input.plannerInputs.monthlyBill) },
-    { label: "Energy price", value: `${formatMoney(input.plannerInputs.energyCostPerKwh)} per kWh` },
-    { label: "Incentive", value: formatMoney(input.plannerInputs.solarIncentiveAmount) },
-    { label: "Cost per watt", value: `${formatMoney(input.plannerInputs.costPerWatt)} per W` },
-    { label: "System size", value: `${formatNumber(input.plannerFinancials.installationSizeKw, 2)} kW` },
-    { label: "Panels", value: `${input.plannerFinancials.activePanelCount}` },
-    { label: "Yearly production", value: `${formatNumber(input.plannerFinancials.yearlyEnergyKwh, 0)} kWh` },
     { label: "Energy covered", value: formatPercent(input.plannerFinancials.energyCoveredDisplayPercent, 1) },
-    { label: "Gross installation", value: formatMoney(input.plannerFinancials.grossInstallationCost) },
-    { label: "Net installation", value: formatMoney(input.plannerFinancials.netInstallationCost) },
+    { label: "Yearly production", value: `${formatNumber(input.plannerFinancials.yearlyEnergyKwh, 0)} kWh` },
     {
       label: "Break-even year",
       value:
@@ -1229,38 +1134,11 @@ export async function exportBlueprintPitchReport(
           ? "Not within 20 years"
           : `${input.plannerFinancials.breakEvenCalendarYear}`,
     },
-    { label: "20-year savings", value: formatMoney(input.plannerFinancials.totalTwentyYearSavings) },
-  ];
-
-  ensureSpace(260);
-  cursorY += drawMetricGrid(pdf, PAGE_MARGIN, cursorY, contentWidth, financialMetrics, 2);
-  cursorY += 10;
-
-  ensureSpace(22);
-  drawSectionHeading(pdf, "Financial Model Assumptions", PAGE_MARGIN, cursorY);
-  cursorY += 14;
-
-  const assumptionsMetrics: MetricItem[] = [
-    { label: "Monthly consumption", value: `${formatNumber(input.plannerFinancials.monthlyUsageKwh, 1)} kWh` },
     { label: "Annual consumption", value: `${formatNumber(input.plannerFinancials.annualConsumptionKwh, 0)} kWh` },
-    { label: "Target system size", value: `${formatNumber(input.plannerFinancials.targetSystemSizeKw, 2)} kW` },
-    { label: "Target panel count", value: `${input.plannerFinancials.targetPanelCount}` },
-    {
-      label: "Roof max panel count",
-      value:
-        input.plannerFinancials.roofMaxPanelCount === null
-          ? "Not constrained"
-          : `${input.plannerFinancials.roofMaxPanelCount}`,
-    },
-    { label: "Effective yield", value: `${formatNumber(input.plannerFinancials.effectiveYieldKwhPerKw, 1)} kWh/kW` },
-    { label: "Performance ratio", value: `${formatNumber(input.plannerFinancials.performanceRatioApplied, 3)}` },
-    { label: "Estimated shade loss", value: `${formatNumber(input.plannerFinancials.shadeLossPercent, 1)}%` },
-    { label: "Annual shortfall", value: `${formatNumber(input.plannerFinancials.annualShortfallKwh, 0)} kWh` },
-    { label: "Monthly shortfall", value: `${formatNumber(input.plannerFinancials.monthlyShortfallKwh, 0)} kWh` },
   ];
 
-  ensureSpace(220);
-  cursorY += drawMetricGrid(pdf, PAGE_MARGIN, cursorY, contentWidth, assumptionsMetrics, 2);
+  ensureSpace(180);
+  cursorY += drawMetricGrid(pdf, PAGE_MARGIN, cursorY, contentWidth, financialHighlightsMetrics, 2);
   cursorY += 8;
 
   ensureSpace(22);
@@ -1272,20 +1150,12 @@ export async function exportBlueprintPitchReport(
   cursorY += 190;
 
   ensureSpace(24);
-  drawSectionHeading(pdf, "20-Year Projection Table", PAGE_MARGIN, cursorY);
-  cursorY += 13;
-  cursorY = drawProjectionTable(pdf, input.plannerFinancials.financialProjection, PAGE_MARGIN, cursorY, contentWidth, ensureSpace);
-  cursorY += 10;
-
   const packageSummaryLines = [
     "Export package includes:",
-    "- vector SVG layout auto-zoomed to maximum geometry coverage",
-    "- side-by-side PDF comparison of vector blueprint and satellite house imagery",
-    "- full roof line geometry and polygons",
-    "- obstacle markers and exclusion zones",
-    "- roof layout panel polygons",
-    "- planner inputs, incentives, costs, break-even, and detailed 20-year cashflow table",
-    `SVG file: ${layoutVector ? svgFileName : "Not generated (no drawable geometry)"}`,
+    "- Vector blueprint and satellite house imagery",
+    "- System sizing and financial highlight summary",
+    "- 20-year cost projection chart",
+    `SVG file: ${layoutVector ? svgFileName : "Not generated"}`,
     `JSON file: ${jsonFileName}`,
   ];
   const wrappedPackageSummary = packageSummaryLines.flatMap((line) => pdf.splitTextToSize(line, contentWidth));
