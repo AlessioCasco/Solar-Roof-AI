@@ -1,7 +1,12 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "vite",
-  "installCommand": "npm install --include=optional",
-  "buildCommand": "npm run build --workspace frontend",
-  "outputDirectory": "frontend/dist"
+  "rewrites": [
+    {
+      "source": "/roboflow-proxy/serverless.roboflow.com/(.*)",
+      "destination": "https://serverless.roboflow.com/$1"
+    },
+    {
+      "source": "/roboflow-proxy/detect.roboflow.com/(.*)",
+      "destination": "https://detect.roboflow.com/$1"
+    }
+  ]
 }

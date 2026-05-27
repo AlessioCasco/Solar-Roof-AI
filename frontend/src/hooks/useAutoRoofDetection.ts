@@ -53,12 +53,12 @@ type PixelToGeoContext = {
   north: number;
 };
 
-const ROBOFLOW_API_URL = import.meta.env.VITE_ROBOFLOW_API_URL;
-const ROBOFLOW_WORKSPACE = import.meta.env.VITE_ROBOFLOW_WORKSPACE;
-const ROBOFLOW_WORKFLOW_ID = import.meta.env.VITE_ROBOFLOW_WORKFLOW_ID;
-const ROBOFLOW_API_KEY = import.meta.env.VITE_ROBOFLOW_API_KEY;
+const ROBOFLOW_API_URL = import.meta.env.VITE_ROBOFLOW_API_URL ?? "https://serverless.roboflow.com";
+const ROBOFLOW_WORKSPACE = import.meta.env.VITE_ROBOFLOW_WORKSPACE ?? "rooflayout";
+const ROBOFLOW_WORKFLOW_ID = import.meta.env.VITE_ROBOFLOW_WORKFLOW_ID ?? "detect-count-and-visualize";
+const ROBOFLOW_API_KEY = import.meta.env.VITE_ROBOFLOW_API_KEY ?? "REPLACED_ROBOFLOW_KEY";
 const ROBOFLOW_WORKFLOW_URL = import.meta.env.VITE_ROBOFLOW_WORKFLOW_URL;
-const ROBOFLOW_DEV_PROXY_PREFIX = "/roboflow-proxy";
+const ROBOFLOW_PROXY_PREFIX = "/roboflow-proxy";
 
 function getMinRoofAreaPx(request: AutoRoofDetectionRequest): number {
   return Math.max(50, request.minRoofAreaPx ?? 500);
@@ -632,25 +632,25 @@ function withApiKeyQuery(endpoint: string, apiKey: string): string {
   return `${normalized}${separator}api_key=${encodeURIComponent(apiKey)}`;
 }
 
-function toDevProxyUrl(absoluteUrl: string): string {
-  return `${ROBOFLOW_DEV_PROXY_PREFIX}/${absoluteUrl.replace(/^https?:\/\//, "")}`;
+function toProxyUrl(absoluteUrl: string): string {
+  return `${ROBOFLOW_PROXY_PREFIX}/${absoluteUrl.replace(/^https?:\/\//, "")}`;
 }
 
 function endpointCandidates(): string[] {
   const candidates: string[] = [];
 
   if (ROBOFLOW_WORKFLOW_URL) {
-    candidates.push(import.meta.env.DEV ? toDevProxyUrl(ROBOFLOW_WORKFLOW_URL) : ROBOFLOW_WORKFLOW_URL);
+    candidates.push(toProxyUrl(ROBOFLOW_WORKFLOW_URL));
 
     if (/\/workflow\//.test(ROBOFLOW_WORKFLOW_URL)) {
       const alternate = ROBOFLOW_WORKFLOW_URL.replace(/\/workflow\//, "/workflows/");
-      candidates.push(import.meta.env.DEV ? toDevProxyUrl(alternate) : alternate);
+      candidates.push(toProxyUrl(alternate));
     }
   }
 
   if (ROBOFLOW_API_URL && ROBOFLOW_WORKSPACE && ROBOFLOW_WORKFLOW_ID) {
     const serverless = `${ROBOFLOW_API_URL.replace(/\/$/, "")}/${ROBOFLOW_WORKSPACE}/workflows/${ROBOFLOW_WORKFLOW_ID}`;
-    candidates.push(import.meta.env.DEV ? toDevProxyUrl(serverless) : serverless);
+    candidates.push(toProxyUrl(serverless));
   }
 
   // De-duplicate while preserving order.
