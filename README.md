@@ -7,17 +7,17 @@
 
   <p align="center">
     <a href="https://solar-roof-ai-frontend.vercel.app/">
-      <img src="https://img.shields.io/badge/🚀_Live_Demo-solar--roof--ai--frontend.vercel.app-yellow?style=for-the-badge" alt="Live Demo">
+      <img src="https://img.shields.io/badge/🚀_Live_Demo-solar--roof--ai--frontend.vercel.app-7946E5?style=for-the-badge" alt="Live Demo">
     </a>
   </p>
 
   <p align="center">
-    <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18.2-yellow?logo=react&logoColor=black" alt="React"></a>
-    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-5.4-yellow?logo=vite&logoColor=black" alt="Vite"></a>
-    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.6-yellow?logo=typescript&logoColor=black" alt="TypeScript"></a>
-    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-4.2-yellow?logo=tailwind-css&logoColor=black" alt="Tailwind CSS"></a>
-    <a href="https://roboflow.com/"><img src="https://img.shields.io/badge/Roboflow-AI_Detection-yellow?logo=roboflow&logoColor=black" alt="Roboflow"></a>
-    <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/License-CC_BY_4.0-yellow.svg" alt="License: CC BY 4.0"></a>
+    <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18.2-7946E5?logo=react&logoColor=white" alt="React"></a>
+    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-5.4-7946E5?logo=vite&logoColor=white" alt="Vite"></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.6-7946E5?logo=typescript&logoColor=white" alt="TypeScript"></a>
+    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-4.2-7946E5?logo=tailwind-css&logoColor=white" alt="Tailwind CSS"></a>
+    <a href="https://roboflow.com/"><img src="https://img.shields.io/badge/Roboflow-AI_Detection-7946E5?logo=roboflow&logoColor=white" alt="Roboflow"></a>
+    <a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/License-CC_BY_4.0-7946E5.svg" alt="License: CC BY 4.0"></a>
   </p>
 </div>
 
