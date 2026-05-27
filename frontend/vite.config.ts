@@ -20,6 +20,7 @@ export default defineConfig({
       "/gmaps-tiles": {
         target: "https://mt0.google.com",
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/gmaps-tiles/, ""),
         configure: (proxy) => {
           proxy.on("proxyRes", (proxyRes) => {
             proxyRes.headers["Access-Control-Allow-Origin"] = "*";
