@@ -218,6 +218,7 @@ export default function App() {
   const [detectionMessage, setDetectionMessage] = useState<string | null>(null);
   const [roofAreaSummary, setRoofAreaSummary] = useState<RoofAreaSummary | null>(null);
   const [roofAreaMessage, setRoofAreaMessage] = useState<string | null>(null);
+  const [showAreaPanel, setShowAreaPanel] = useState(false);
   const [solarOverlayEnabled, setSolarOverlayEnabled] = useState(false);
   const [panelTypeId, setPanelTypeId] = useState<PanelTypeId>("standard-residential");
   const [panelLayoutMode, setPanelLayoutMode] = useState<PanelLayoutMode>("auto");
@@ -500,6 +501,7 @@ export default function App() {
     setDetectionMessage(null);
     setRoofAreaSummary(null);
     setRoofAreaMessage(null);
+    setShowAreaPanel(false);
     setLayoutFinished(false);
     setPlacedPanels([]);
     setPanelTargetCount(25);
@@ -518,6 +520,7 @@ export default function App() {
   useEffect(() => {
     setRoofAreaSummary(null);
     setRoofAreaMessage(null);
+    setShowAreaPanel(false);
   }, [roofElements, obstacleMarkers]);
 
   useEffect(() => {
@@ -601,6 +604,7 @@ export default function App() {
     setDetectionMessage(null);
     setRoofAreaSummary(null);
     setRoofAreaMessage(null);
+    setShowAreaPanel(false);
     setLayoutFinished(false);
     setRoofElements([]);
     setObstacleMarkers([]);
@@ -808,9 +812,6 @@ export default function App() {
     const bestCount = Math.min(Math.max(1, plannerFinancials.recommendedPanelCount), roofMax);
     setPanelTargetManuallySet(true);
     setPanelTargetCount(bestCount);
-    setPanelLayoutMessage(
-      `Best maximum selected: ${bestCount} panel(s) for the strongest cost-to-solar tradeoff on this roof.`
-    );
   }, [plannerFinancials.recommendedPanelCount, plannerFinancials.roofMaxPanelCount, solarUnlockMessage, solarUnlocked]);
 
   useEffect(() => {
@@ -1064,6 +1065,7 @@ export default function App() {
     if (!summary) {
       setRoofAreaSummary(null);
       setRoofAreaMessage("Draw at least one roof polygon, rectangle, or circle before calculating solar surface area.");
+      setShowAreaPanel(false);
       return;
     }
 
@@ -1073,6 +1075,7 @@ export default function App() {
         ? `Area updated. Ignored ${summary.ignoredRoofShapes} unsupported roof outline(s).`
         : `Area updated across ${summary.roofShapeCount} roof outline(s).`
     );
+    setShowAreaPanel(true);
   }, [featureGroupRef]);
 
   return (
@@ -1152,6 +1155,7 @@ export default function App() {
           plannerSyncMessage={plannerSyncMessage}
           onPlannerInputChange={handlePlannerInputChange}
           onResetPlannerInputs={resetPlannerInputs}
+          showAreaPanel={showAreaPanel}
         />
       </main>
     </div>

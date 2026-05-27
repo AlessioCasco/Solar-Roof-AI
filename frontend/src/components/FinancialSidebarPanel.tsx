@@ -70,7 +70,7 @@ function InputField({
   return (
     <div className="flex flex-col gap-1">
       <label className="text-[10px] uppercase tracking-[0.14em] text-zinc-400">{label}</label>
-      <div className="flex h-9 items-center rounded-xl border border-white/10 bg-black/25 px-3 text-sm text-white focus-within:border-cyan-300/40">
+      <div className="flex h-9 items-center rounded-xl border border-white/10 bg-black/25 px-3 text-sm text-white focus-within:border-violet-300/40">
         {prefix && <span className="mr-1 text-zinc-500">{prefix}</span>}
         <input
           type="number"
@@ -100,9 +100,9 @@ function InputField({
 function getSyncTone(syncState: PlannerSyncState) {
   switch (syncState) {
     case "synced":
-      return "border-cyan-300/20 bg-cyan-500/10 text-cyan-100";
+      return "border-violet-300/20 bg-violet-500/10 text-violet-100";
     case "syncing":
-      return "border-sky-300/20 bg-sky-500/10 text-sky-100";
+      return "border-violet-300/20 bg-violet-500/10 text-violet-100";
     case "paused":
       return "border-zinc-300/20 bg-zinc-500/10 text-zinc-100";
     case "error":
@@ -132,7 +132,7 @@ function CustomSelect({
         type="button"
         disabled={disabled}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-9 w-full items-center justify-between rounded-xl border border-white/10 bg-black/25 px-3 text-[11px] sm:text-xs text-zinc-200 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:border-cyan-300/40"
+        className="flex h-9 w-full items-center justify-between rounded-xl border border-white/10 bg-black/25 px-3 text-[11px] sm:text-xs text-zinc-200 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:border-violet-300/40"
       >
         <span className="truncate">{selectedOption?.label}</span>
         <ChevronDown size={14} className="ml-2 shrink-0 text-zinc-500" />
@@ -151,7 +151,7 @@ function CustomSelect({
                   setIsOpen(false);
                 }}
                 className={`w-full text-left px-3 py-2.5 text-xs transition-colors hover:bg-white/5 ${
-                  opt.id === value ? "bg-cyan-500/10 text-cyan-300" : "text-zinc-300"
+                  opt.id === value ? "bg-violet-500/10 text-violet-300" : "text-zinc-300"
                 }`}
               >
                 {opt.label}
@@ -200,7 +200,7 @@ export function FinancialSidebarPanel({
   return (
     <section className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-3 text-white">
       <div className="flex items-center justify-between cursor-pointer select-none" onClick={() => setIsExpanded(!isExpanded)}>
-        <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-cyan-300">
+        <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-violet-300">
           <DollarSign size={14} />
           <span>Solar Potential Analysis</span>
         </div>
@@ -210,30 +210,15 @@ export function FinancialSidebarPanel({
       {isExpanded && (
         <div className="mt-2 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2">
           {isLocked && (
-            <div className="rounded-2xl border border-amber-300/30 bg-amber-500/10 p-3 text-[10px] uppercase tracking-[0.12em] text-amber-100 leading-relaxed">
+            <div className="rounded-2xl border border-white/10 bg-black/40 p-3 text-[10px] uppercase tracking-[0.12em] text-amber-200 leading-relaxed">
               {lockMessage}
             </div>
           )}
 
           {!isLocked && (
-            <>
-              <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-3 flex items-center mb-2 gap-3">
-                <Info className="text-cyan-300 shrink-0" size={16} />
-                <div className="flex-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100">Projections use a USA financial model</div>
-                <button
-                  aria-label="Reset Defaults"
-                  onClick={onReset}
-                  disabled={isLocked}
-                  className="text-xs text-cyan-300 hover:text-cyan-100 underline decoration-cyan-500/50 underline-offset-4 disabled:opacity-50"
-                >
-                  Reset
-                </button>
-              </div>
-
               <div className={`rounded-2xl border px-3 py-3 text-[10px] uppercase tracking-[0.12em] leading-relaxed ${getSyncTone(syncState)}`}>
                 {syncMessage}
               </div>
-            </>
           )}
 
           <div className="flex flex-col gap-4">
@@ -270,7 +255,7 @@ export function FinancialSidebarPanel({
                   onClick={onApplyBestMaximum}
                   title="Find the best panel count for cost versus solar coverage"
                   disabled={isLocked || !hasRoofCapacity}
-                  className="shrink-0 h-8 rounded-lg border border-cyan-300/30 bg-cyan-500/20 px-2 text-[10px] uppercase tracking-[0.12em] text-cyan-100 hover:bg-cyan-500/40 disabled:opacity-40"
+                  className="shrink-0 h-8 rounded-lg border border-violet-300/30 bg-violet-500/20 px-2 text-[10px] uppercase tracking-[0.12em] text-violet-100 hover:bg-violet-500/40 disabled:opacity-40"
                 >
                   Best ROI
                 </button>
@@ -301,7 +286,7 @@ export function FinancialSidebarPanel({
                   onClick={() => onPanelLayoutModeChange("auto")}
                   className={`flex-1 rounded-lg px-2 py-1.5 text-[10px] uppercase tracking-[0.14em] transition ${
                     panelLayoutMode === "auto"
-                      ? "bg-cyan-400/20 text-cyan-200 border border-cyan-300/30"
+                      ? "bg-violet-400/20 text-violet-200 border border-violet-300/30"
                       : "text-zinc-500 border border-transparent hover:text-zinc-300"
                   } disabled:opacity-50`}
                 >
@@ -313,7 +298,7 @@ export function FinancialSidebarPanel({
                   onClick={() => onPanelLayoutModeChange("manual")}
                   className={`flex-1 rounded-lg px-2 py-1.5 text-[10px] uppercase tracking-[0.14em] transition ${
                     panelLayoutMode === "manual"
-                      ? "bg-cyan-400/20 text-cyan-200 border border-cyan-300/30"
+                      ? "bg-violet-400/20 text-violet-200 border border-violet-300/30"
                       : "text-zinc-500 border border-transparent hover:text-zinc-300"
                   } disabled:opacity-50`}
                 >
@@ -331,7 +316,7 @@ export function FinancialSidebarPanel({
             </div>
 
             {panelLayoutMessage && (
-              <div className="text-[10px] uppercase tracking-[0.12em] text-cyan-100 bg-cyan-500/20 p-2 rounded-xl -mt-2">
+              <div className="text-[10px] uppercase tracking-[0.12em] text-violet-100 bg-violet-500/20 p-2 rounded-xl -mt-2">
                 {panelLayoutMessage}
               </div>
             )}

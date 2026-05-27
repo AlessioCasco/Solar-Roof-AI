@@ -71,6 +71,7 @@ type WorkspaceContentProps = {
   plannerSyncMessage: string;
   onPlannerInputChange: (field: PlannerInputField, value: number, min: number, max: number) => void;
   onResetPlannerInputs: () => void;
+  showAreaPanel: boolean;
 };
 
 
@@ -115,6 +116,7 @@ type WorkspaceDataPanelProps = {
   plannerSyncMessage: string;
   onPlannerInputChange: (field: PlannerInputField, value: number, min: number, max: number) => void;
   onResetPlannerInputs: () => void;
+  showAreaPanel: boolean;
 };
 
 function formatSqFt(value: number) {
@@ -137,8 +139,8 @@ function SectionTitle({ icon, title, detail }: { icon: React.ReactNode; title: s
 
 function SolarOverlayPanel({ solarHeatmap }: { solarHeatmap: SolarHeatmap }) {
   return (
-    <section className="flex flex-col gap-4 rounded-3xl border border-amber-300/20 bg-amber-400/10 p-4">
-      <SectionTitle icon={<Layers size={14} className="text-amber-200" />} title="Solar View" detail={solarHeatmap.bestZoneLabel} />
+    <section className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-white/[0.03] p-4">
+      <SectionTitle icon={<Layers size={14} className="text-violet-200" />} title="Solar View" detail={solarHeatmap.bestZoneLabel} />
       <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
         <div className="h-2 rounded-full bg-gradient-to-r from-sky-700 via-amber-400 to-lime-400" />
         <div className="mt-2 flex items-center justify-between text-[9px] uppercase tracking-[0.14em] text-zinc-500">
@@ -155,7 +157,7 @@ function SolarOverlayPanel({ solarHeatmap }: { solarHeatmap: SolarHeatmap }) {
             <div className="mt-1 text-lg text-white">{solarHeatmap.peakExposurePercent}%</div>
           </div>
         </div>
-        <p className="mt-4 text-[10px] uppercase tracking-[0.14em] text-amber-100/75 leading-relaxed">
+        <p className="mt-4 text-[10px] uppercase tracking-[0.14em] text-zinc-400 leading-relaxed">
           Gradient blends sun duration, seasonal sweep, and obstacle shadows into one planning overlay.
         </p>
         {solarHeatmap.isUniform && (
@@ -245,6 +247,7 @@ function WorkspaceDataPanel({
   plannerSyncMessage,
   onPlannerInputChange,
   onResetPlannerInputs,
+  showAreaPanel,
 }: WorkspaceDataPanelProps) {
   const [showActivityLog, setShowActivityLog] = React.useState(false);
 
@@ -281,7 +284,7 @@ function WorkspaceDataPanel({
                   step={0.05}
                   value={detectionConfidenceThreshold}
                   onChange={(event) => onDetectionConfidenceThresholdChange(Number(event.target.value))}
-                  className="mt-3 w-full accent-cyan-400"
+                  className="mt-3 w-full accent-violet-400"
                 />
               </div>
 
@@ -334,19 +337,19 @@ function WorkspaceDataPanel({
               )}
 
               {detectionPreview && (
-                <div className="rounded-2xl border border-cyan-400/40 bg-cyan-500/10 p-4">
-                  <div className="text-[10px] uppercase tracking-[0.15em] text-cyan-200">Detection preview ready</div>
-                  <div className="mt-2 text-[10px] uppercase tracking-wider text-cyan-100/80">
+                <div className="rounded-2xl border border-violet-400/40 bg-violet-500/10 p-4">
+                  <div className="text-[10px] uppercase tracking-[0.15em] text-violet-200">Detection preview ready</div>
+                  <div className="mt-2 text-[10px] uppercase tracking-wider text-violet-100/80">
                     {detectionPreview.roofPlanes.length} roof plane(s), {detectionPreview.obstacles.length} obstacle(s)
                   </div>
-                  <div className="mt-1 text-[10px] uppercase tracking-wider text-cyan-100/80">
+                  <div className="mt-1 text-[10px] uppercase tracking-wider text-violet-100/80">
                     Model {detectionPreview.metadata.model} | {detectionPreview.metadata.processingMs}ms
                   </div>
-                  <div className="mt-1 text-[10px] uppercase tracking-wider text-cyan-100/80">
+                  <div className="mt-1 text-[10px] uppercase tracking-wider text-violet-100/80">
                     Filtered {detectionPreview.metadata.filteredRoofPlanes}/{detectionPreview.metadata.roofCandidates} roofs
                   </div>
                   {detectionPreview.metadata.warningCodes.length > 0 && (
-                    <div className="mt-1 text-[10px] uppercase tracking-wider text-cyan-100/80">
+                    <div className="mt-1 text-[10px] uppercase tracking-wider text-violet-100/80">
                       Warnings: {detectionPreview.metadata.warningCodes.join(", ")}
                     </div>
                   )}
@@ -362,9 +365,9 @@ function WorkspaceDataPanel({
               )}
             </section>
 
-            {(roofAreaSummary || roofAreaMessage) && (
-              <section className="flex flex-col gap-3 rounded-3xl border border-emerald-400/25 bg-emerald-500/10 p-3">
-                <SectionTitle icon={<Ruler size={14} className="text-emerald-200" />} title="Solar Surface Area" />
+            {showAreaPanel && (roofAreaSummary || roofAreaMessage) && (
+              <section className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/[0.03] p-3">
+                <SectionTitle icon={<Ruler size={14} className="text-violet-200" />} title="Solar Surface Area" />
                 {roofAreaSummary && (
                   <>
                     <div className="grid grid-cols-3 gap-2">
@@ -376,19 +379,19 @@ function WorkspaceDataPanel({
                         <div className="text-[9px] uppercase tracking-[0.14em] text-zinc-400">Blocked</div>
                         <div className="mt-1 text-sm text-white">{formatSqFt(roofAreaSummary.blockedSqFt)} sq ft</div>
                       </div>
-                      <div className="rounded-2xl border border-emerald-300/25 bg-emerald-500/10 px-3 py-3">
-                        <div className="text-[9px] uppercase tracking-[0.14em] text-emerald-200">Net</div>
+                      <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3">
+                        <div className="text-[9px] uppercase tracking-[0.14em] text-violet-200">Net</div>
                         <div className="mt-1 text-sm text-white">{formatSqFt(roofAreaSummary.netSqFt)} sq ft</div>
                       </div>
                     </div>
-                    <div className="text-[10px] text-emerald-100/80 uppercase tracking-wider leading-relaxed">
+                    <div className="text-[10px] text-zinc-400 uppercase tracking-wider leading-relaxed">
                       {roofAreaSummary.roofShapeCount} roof outline(s) measured with a {roofAreaSummary.obstacleClearanceFeet} ft
                       {" "}clearance around {roofAreaSummary.obstacleCount} obstacle(s).
                     </div>
                   </>
                 )}
                 {roofAreaMessage && (
-                  <div className="text-[10px] text-emerald-100/80 uppercase tracking-wider leading-relaxed">{roofAreaMessage}</div>
+                  <div className="text-[10px] text-zinc-400 uppercase tracking-wider leading-relaxed">{roofAreaMessage}</div>
                 )}
               </section>
             )}
@@ -451,9 +454,9 @@ function WorkspaceDataPanel({
                         {Array.from({ length: placedPanelCount }).map((_, index) => (
                           <div
                             key={`panel-${index}`}
-                            className="text-[10px] text-zinc-300 bg-cyan-500/10 p-2 rounded-xl flex items-center gap-2 tracking-wide font-mono border border-cyan-300/15"
+                            className="text-[10px] text-zinc-300 bg-violet-500/10 p-2 rounded-xl flex items-center gap-2 tracking-wide font-mono border border-violet-300/15"
                           >
-                            <Square size={10} className="text-cyan-100/80" /> PNL #{(index + 1).toString().padStart(3, "0")}
+                            <Square size={10} className="text-violet-100/80" /> PNL #{(index + 1).toString().padStart(3, "0")}
                           </div>
                         ))}
                       </>
@@ -513,6 +516,7 @@ export function WorkspaceContent({
   plannerSyncMessage,
   onPlannerInputChange,
   onResetPlannerInputs,
+  showAreaPanel,
 }: WorkspaceContentProps) {
   if (!coordinates) {
     return <EmptyState />;
@@ -573,6 +577,7 @@ export function WorkspaceContent({
               plannerSyncMessage={plannerSyncMessage}
               onPlannerInputChange={onPlannerInputChange}
               onResetPlannerInputs={onResetPlannerInputs}
+              showAreaPanel={showAreaPanel}
             />
           )}
         </div>

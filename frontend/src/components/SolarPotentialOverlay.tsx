@@ -79,18 +79,18 @@ export function SolarPotentialOverlay({ financials }: { financials: SolarFinanci
       <button
         type="button"
         onClick={() => setIsVisible((previous) => !previous)}
-        className="absolute left-4 top-[7rem] z-[401] flex h-9 items-center justify-center gap-2 rounded-xl border border-cyan-300/20 bg-black/60 px-3 text-xs font-medium text-cyan-100 backdrop-blur-md transition-colors hover:bg-black/80 shadow-xl"
+        className="absolute left-4 top-[7rem] z-[401] flex h-9 items-center justify-center gap-2 rounded-xl border border-violet-300/20 bg-black/60 px-3 text-xs font-medium text-violet-100 backdrop-blur-md transition-colors hover:bg-black/80 shadow-xl"
       >
-        {isVisible ? <X size={14} className="text-zinc-300" /> : <BarChart3 size={14} className="text-cyan-200" />}
+        {isVisible ? <X size={14} className="text-zinc-300" /> : <BarChart3 size={14} className="text-violet-200" />}
         <span>{isVisible ? "Hide Analysis" : "Show Analysis"}</span>
       </button>
 
       {isVisible ? (
         <div className="pointer-events-none absolute left-4 top-[9.6rem] z-[400] flex max-h-[calc(100%-10.5rem)] w-[16.5rem] flex-col gap-2.5 overflow-y-auto custom-scrollbar">
-          <Card className="pointer-events-auto rounded-[1.2rem] border-cyan-300/15 bg-black/70 p-3 shadow-2xl backdrop-blur-xl">
+          <Card className="pointer-events-auto rounded-[1.2rem] border-violet-300/15 bg-black/70 p-3 shadow-2xl backdrop-blur-xl">
             <div className="flex items-center gap-2">
-              <DollarSign size={14} className="text-cyan-200" />
-              <h2 className="text-xs font-medium uppercase tracking-[0.12em] text-cyan-100">Solar Potential</h2>
+              <DollarSign size={14} className="text-violet-200" />
+              <h2 className="text-xs font-medium uppercase tracking-[0.12em] text-violet-100">Solar Potential</h2>
             </div>
             <div className="mb-2 mt-2 border-t border-white/10" />
 
@@ -98,7 +98,7 @@ export function SolarPotentialOverlay({ financials }: { financials: SolarFinanci
               <StatRow
                 label={
                   <span className="flex items-center gap-1.5">
-                    <SunMedium size={11} className="text-cyan-200" /> Yearly energy
+                    <SunMedium size={11} className="text-violet-200" /> Yearly energy
                   </span>
                 }
                 value={`${formatNumber(financials.yearlyEnergyKwh, 0)} kWh`}
@@ -106,7 +106,7 @@ export function SolarPotentialOverlay({ financials }: { financials: SolarFinanci
               <StatRow
                 label={
                   <span className="flex items-center gap-1.5">
-                    <Home size={11} className="text-cyan-200" /> System size
+                    <Home size={11} className="text-violet-200" /> System size
                   </span>
                 }
                 value={`${formatNumber(financials.installationSizeKw, 2)} kW`}
@@ -114,7 +114,7 @@ export function SolarPotentialOverlay({ financials }: { financials: SolarFinanci
               <StatRow
                 label={
                   <span className="flex items-center gap-1.5">
-                    <Gauge size={11} className="text-cyan-200" /> Covered
+                    <Gauge size={11} className="text-violet-200" /> Covered
                   </span>
                 }
                 value={`${formatNumber(financials.energyCoveredDisplayPercent, 1)}%`}
@@ -123,7 +123,7 @@ export function SolarPotentialOverlay({ financials }: { financials: SolarFinanci
             </div>
           </Card>
 
-          <Card className="pointer-events-auto rounded-[1.2rem] border-cyan-300/15 bg-black/70 p-3 shadow-2xl backdrop-blur-xl">
+          <Card className="pointer-events-auto rounded-[1.2rem] border-violet-300/15 bg-black/70 p-3 shadow-2xl backdrop-blur-xl">
             <h2 className="mb-2 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400">20 Year Cost Projection</h2>
 
             <div className="h-[104px] w-full">
@@ -146,7 +146,7 @@ export function SolarPotentialOverlay({ financials }: { financials: SolarFinanci
             <div className="mt-2.5 flex flex-col gap-2">
               <StatRow label="Without solar" value={formatCurrency(financials.costWithoutSolarTwentyYear)} />
               <StatRow label="With solar" value={formatCurrency(financials.costWithSolarTwentyYear)} />
-              <StatRow label="Savings" value={formatCurrency(financials.totalTwentyYearSavings)} tone="text-cyan-200" />
+              <StatRow label="Savings" value={formatCurrency(financials.totalTwentyYearSavings)} tone="text-emerald-300" />
             </div>
           </Card>
         </div>

@@ -443,7 +443,7 @@ export function SolarFinancialDashboard({
               prefix="$"
               suffix="/kWh"
               description="Used to convert your bill into estimated monthly usage and to project rising utility costs."
-              accentClassName="accent-sky-400"
+              accentClassName="accent-violet-400"
               onChange={onInputChange}
             />
 
@@ -456,7 +456,7 @@ export function SolarFinancialDashboard({
               step={100}
               prefix="$"
               description="Defaulted to $0 nationally. Enter state, utility, or installer rebates here if they apply to your project."
-              accentClassName="accent-emerald-400"
+              accentClassName="accent-violet-400"
               onChange={onInputChange}
             />
 
@@ -470,7 +470,7 @@ export function SolarFinancialDashboard({
               prefix="$"
               suffix="/W"
               description="Gross install benchmark before incentives. Edit this to match your installer quote."
-              accentClassName="accent-amber-400"
+              accentClassName="accent-violet-400"
               onChange={onInputChange}
             />
 
@@ -483,7 +483,7 @@ export function SolarFinancialDashboard({
               step={5}
               suffix="W"
               description="Electrical output per module. Footprint still follows the panel type selected in the sidebar."
-              accentClassName="accent-rose-400"
+              accentClassName="accent-violet-400"
               onChange={onInputChange}
             />
           </div>
@@ -493,21 +493,21 @@ export function SolarFinancialDashboard({
           <div className="flex flex-col gap-5">
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
               <SummaryCard
-                icon={<SunMedium size={20} className="text-violet-100" />}
+                icon={<SunMedium size={20} className="text-violet-200" />}
                 label="Yearly energy"
                 value={`${formatNumber(financials.yearlyEnergyKwh, 1)} kWh`}
                 detail={`Offsets about ${formatNumber(financials.monthlyUsageKwh, 0)} kWh/month from your bill model.`}
-                tone="border-violet-300/20 bg-violet-500/10"
+                tone="border-white/10 bg-white/[0.04]"
               />
               <SummaryCard
-                icon={<Home size={20} className="text-sky-100" />}
+                icon={<Home size={20} className="text-violet-200" />}
                 label="Installation size"
                 value={`${formatNumber(financials.installationSizeKw, 1)} kW`}
                 detail={`${financials.recommendedPanelCount} x ${formatWholeNumber(inputs.panelCapacityWatts)}W modules`}
-                tone="border-sky-300/20 bg-sky-500/10"
+                tone="border-white/10 bg-white/[0.04]"
               />
               <SummaryCard
-                icon={<DollarSign size={20} className="text-amber-100" />}
+                icon={<DollarSign size={20} className="text-violet-200" />}
                 label="Installation cost"
                 value={formatCurrency(financials.netInstallationCost)}
                 detail={
@@ -515,10 +515,10 @@ export function SolarFinancialDashboard({
                     ? `${formatCurrency(financials.grossInstallationCost)} gross less ${formatCurrency(financials.solarIncentiveAmountApplied)} incentives`
                     : `${formatCurrency(financials.grossInstallationCost)} gross install cost`
                 }
-                tone="border-amber-300/20 bg-amber-500/10"
+                tone="border-white/10 bg-white/[0.04]"
               />
               <SummaryCard
-                icon={<Gauge size={20} className="text-emerald-100" />}
+                icon={<Gauge size={20} className="text-violet-200" />}
                 label="Energy covered"
                 value={`${formatNumber(financials.energyCoveredPercent, 0)} %`}
                 detail={
@@ -526,7 +526,7 @@ export function SolarFinancialDashboard({
                     ? `${formatNumber(financials.monthlyShortfallKwh, 0)} kWh/month still comes from the grid`
                     : "System target fully covered by the current roof-fit plan"
                 }
-                tone="border-emerald-300/20 bg-emerald-500/10"
+                tone="border-white/10 bg-white/[0.04]"
               />
             </div>
 
