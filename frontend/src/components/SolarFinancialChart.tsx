@@ -78,8 +78,8 @@ export default function SolarFinancialChart({
           backgroundColor: "rgba(3, 7, 18, 0.92)",
           color: "#fff",
         }}
-        formatter={(value: number) => formatCurrency(value)}
-        labelFormatter={(label: number) => `${label}`}
+        formatter={(value: any) => formatCurrency(Number(value) || 0)}
+        labelFormatter={(label: any) => `${label}`}
       />
       <Legend wrapperStyle={{ fontSize: "12px", color: "rgba(255,255,255,0.72)" }} />
       {breakEvenCalendarYear ? (

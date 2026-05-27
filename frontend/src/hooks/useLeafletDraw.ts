@@ -319,7 +319,6 @@ export function useLeafletDraw(
       const map = L.map(mapContainerRef.current, {
         zoomControl: true,
         attributionControl: false,
-        tap: false,
         scrollWheelZoom: "center",
         zoomSnap: 0.1,
         zoomDelta: 0.25,

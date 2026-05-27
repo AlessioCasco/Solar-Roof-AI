@@ -377,7 +377,7 @@ export function buildPanelLayoutContext(
       ? []
       : layoutFeatures.filter(
           (feature): feature is GeoJSON.Feature<GeoJSON.Polygon | GeoJSON.MultiPolygon | GeoJSON.LineString | GeoJSON.MultiLineString> =>
-            feature !== primaryRoof && booleanIntersects(primaryRoof, feature)
+            feature !== primaryRoof && booleanIntersects(primaryRoof!, feature)
         );
 
   const obstacleExclusionZones =
@@ -385,7 +385,7 @@ export function buildPanelLayoutContext(
       ? []
       : obstacleMarkers
           .map(createObstacleExclusionZone)
-          .filter((feature) => booleanIntersects(primaryRoof, feature));
+          .filter((feature) => booleanIntersects(primaryRoof!, feature));
 
   return {
     primaryRoof,

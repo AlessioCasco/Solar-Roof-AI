@@ -125,7 +125,7 @@ export function usePanelLayoutWorker() {
           requestId,
           task,
           payload,
-        } satisfies WorkerRequest);
+        } as WorkerRequest);
       });
     },
     []

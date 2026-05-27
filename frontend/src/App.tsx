@@ -5,7 +5,6 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import { DetectionSnipModal, type CropRect } from "@/components/DetectionSnipModal";
 import { MainHeader } from "@/components/Layout";
-import { RoboflowDebugPanel } from "@/components/RoboflowDebugPanel";
 import { WorkspaceContent } from "@/components/Workspace";
 import { useAutoRoofDetection } from "@/hooks/useAutoRoofDetection";
 import { useAddressSearch } from "@/hooks/useAddressSearch";
@@ -235,7 +234,6 @@ export default function App() {
   const [plannerSyncMessage, setPlannerSyncMessage] = useState(
     "Enter an average monthly bill, then draw a primary roof polygon to turn the estimate into a live packed layout."
   );
-  const [debugPanelOpen, setDebugPanelOpen] = useState(false);
   const [snipModalOpen, setSnipModalOpen] = useState(false);
   const [pendingDetection, setPendingDetection] = useState<PendingDetection | null>(null);
   const plannerSyncRunRef = useRef(0);
@@ -1098,12 +1096,6 @@ export default function App() {
         onToggleWorkspace={toggleWorkspace}
         onSetViewMode={setViewMode}
         onToggleSolarOverlay={() => setSolarOverlayEnabled((previous) => !previous)}
-        onOpenDebug={() => setDebugPanelOpen(true)}
-      />
-
-      <RoboflowDebugPanel
-        isOpen={debugPanelOpen}
-        onClose={() => setDebugPanelOpen(false)}
       />
 
       <DetectionSnipModal
