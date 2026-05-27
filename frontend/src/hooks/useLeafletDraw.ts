@@ -1,6 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet-draw";
+
+// Improve tooltips and texts globally for better UI/UX
+(L as any).drawLocal.draw.toolbar.buttons.polygon = 'Draw a custom roof area';
+(L as any).drawLocal.draw.toolbar.buttons.polyline = 'Draw a measuring line';
+(L as any).drawLocal.draw.toolbar.buttons.rectangle = 'Draw a rectangular roof';
+(L as any).drawLocal.draw.toolbar.buttons.circle = 'Draw a circular area';
+(L as any).drawLocal.draw.toolbar.buttons.marker = 'Place an obstacle marker';
+(L as any).drawLocal.edit.toolbar.buttons.edit = 'Edit layers';
+(L as any).drawLocal.edit.toolbar.buttons.editDisabled = 'No layers to edit';
+(L as any).drawLocal.edit.toolbar.buttons.remove = 'Delete layers';
+(L as any).drawLocal.edit.toolbar.buttons.removeDisabled = 'No layers to delete';
+
 import { circle as turfCircle } from "@turf/turf";
 import { createPanelFeatureAtCenter, validatePanelPlacement } from "@/lib/panelLayout";
 import { SolarHeatmap } from "@/lib/solarHeatmap";
