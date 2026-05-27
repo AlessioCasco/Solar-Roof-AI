@@ -112,6 +112,58 @@ function getSyncTone(syncState: PlannerSyncState) {
   }
 }
 
+function CustomSelect({
+  value,
+  options,
+  onChange,
+  disabled
+}: {
+  value: string;
+  options: { id: string; label: string }[];
+  onChange: (val: string) => void;
+  disabled?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedOption = options.find((o) => o.id === value);
+
+  return (
+    <div className="relative w-full">
+      <button
+        type="button"
+        disabled={disabled}
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex h-9 w-full items-center justify-between rounded-xl border border-white/10 bg-black/25 px-3 text-[11px] sm:text-xs text-zinc-200 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:border-cyan-300/40"
+      >
+        <span className="truncate">{selectedOption?.label}</span>
+        <ChevronDown size={14} className="ml-2 shrink-0 text-zinc-500" />
+      </button>
+
+      {isOpen && !disabled && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+          <div className="absolute left-0 top-full z-50 mt-1 w-full overflow-hidden rounded-xl border border-white/10 bg-zinc-950 shadow-[0_4px_24px_rgba(0,0,0,0.5)]">
+            {options.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                onClick={() => {
+                  onChange(opt.id);
+                  setIsOpen(false);
+                }}
+                className={`w-full text-left px-3 py-2.5 text-xs transition-colors hover:bg-white/5 ${
+                  opt.id === value ? "bg-cyan-500/10 text-cyan-300" : "text-zinc-300"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function FinancialSidebarPanel({
   inputs,
   financials,
@@ -230,18 +282,15 @@ export function FinancialSidebarPanel({
 
             <div className="flex flex-col gap-1">
               <label className="text-[10px] uppercase tracking-[0.14em] text-zinc-400 mb-1">Panel type</label>
-              <select
+              <CustomSelect
                 value={panelTypeId}
                 disabled={isLocked}
-                onChange={(e) => onPanelTypeChange(e.target.value as PanelTypeId)}
-                className="h-9 w-full rounded-xl border border-white/10 bg-black/25 px-3 text-sm outline-none disabled:opacity-50"
-              >
-                {Object.values(PANEL_TYPES).map((pt) => (
-                  <option key={pt.id} value={pt.id} className="bg-zinc-950 text-white">
-                    {pt.label} ({pt.heightM}m x {pt.widthM}m)
-                  </option>
-                ))}
-              </select>
+                onChange={(val) => onPanelTypeChange(val as PanelTypeId)}
+                options={Object.values(PANEL_TYPES).map((pt) => ({
+                  id: pt.id,
+                  label: `${pt.label} (${pt.heightM}m x ${pt.widthM}m)`,
+                }))}
+              />
             </div>
 
             <div className="flex items-center justify-between gap-2">
